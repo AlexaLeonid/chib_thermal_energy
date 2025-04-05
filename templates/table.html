@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ table_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="static/css/table.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>{{ table_name }}</h1>
+
+        {% if message %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endif %}
+        <div class="settings">
+            <div class="filters"></div>
+                    <!-- Блок выбора колонок -->
+            <div class="column-toggle">
+                <h5>Колонки:</h5>
+                <div class="form-check form-check-inline">
+                   {% for column in columns %}
+                   <div class="field-check">
+                       <input class="form-check-input column-toggle-checkbox"
+                          type="checkbox"
+                          id="col-{{ loop.index }}"
+                           value="{{ loop.index0 }}"
+                          checked>
+                       <label class="form-check-label" for="col-{{ loop.index }}">
+                       {{ column }}
+                     </label>
+                  </div>
+                   {% endfor %}
+              </div>
+            </div>
+        </div>
+
+
+        <table id="dataTable" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in table_data %}
+                    <tr>
+                        {% for value in row %}
+                            <td>
+                                {% if value is none %}
+                                    NULL
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Инициализация DataTable
+            var table = $('#dataTable').DataTable({
+                language: {
+                    emptyTable: "Нет данных в таблице"
+                }
+            });
+
+            // Обработка изменения состояния чекбоксов
+            $('.column-toggle-checkbox').change(function() {
+                var columnIndex = $(this).val();
+                var column = table.column(columnIndex);
+
+                // Показываем/скрываем колонку в зависимости от состояния чекбокса
+                column.visible(!column.visible());
+
+                // Обновляем состояние чекбокса, если колонка была скрыта другим способом
+                $(this).prop('checked', column.visible());
+            });
+
+            // Инициализация состояния чекбоксов при загрузке
+            table.columns().every(function() {
+                $('.column-toggle-checkbox[value="' + this.index() + '"]')
+                    .prop('checked', this.visible());
+            });
+        });
+    </script>
+</body>
+</html>

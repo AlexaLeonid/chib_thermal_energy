@@ -1,0 +1,55 @@
+body{
+    font-size: 12px;
+}
+
+a{
+    color: #616161;
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 0px 5px;
+}
+
+a:hover, active{
+    background-color: #ffffff;
+}
+
+.header{
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.title{
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.tables{
+    background: #f0f2f5;
+    display: inline-block;
+    padding:10px;
+}
+
+.settings{
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+}
+
+.column-toggle {
+    background: #f0f2f5;
+    display: inline-block;
+    flex-direction: column;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+
+}
+
+.column-toggle label {
+    margin-right: 15px;
+    cursor: pointer;
+}
