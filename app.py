@@ -59,7 +59,7 @@ def pa():
 def personal_ac():
     id = unquote(request.args.get('id'))
     (pa_data, lodger_columns, lodger_data, fl_srvs_columns, fl_srvs_data, accarc_columns, accarc_data,
-    communics_columns, communics_data, pa_c_columns, pa_c_data,f_c_columns, f_c_data) = db.personal_ac_obj(id)
+    communics_columns, communics_data, pa_c_columns, pa_c_data,f_c_columns, f_c_data, h_c_columns, h_c_data) = db.personal_ac_obj(id)
     # a_columns, accarc_data = db.personal_ac_accarc(id)
     return render_template('personal_ac.html', id = id, pa_data=pa_data,
                           lodger_data=lodger_data, lodger_columns=lodger_columns,
@@ -67,8 +67,8 @@ def personal_ac():
                           accarc_columns = accarc_columns, accarc_data = accarc_data,
                           communics_columns = communics_columns, communics_data = communics_data,
                           pa_c_columns = pa_c_columns, pa_c_data = pa_c_data,
-                          f_c_columns = f_c_columns, f_c_data = f_c_data)
-
+                          f_c_columns = f_c_columns, f_c_data = f_c_data,
+                          h_c_columns = h_c_columns, h_c_data = h_c_data)
 
 @app.route('/api/meter-readings/<counter_id>')
 def get_meter_readings(counter_id):

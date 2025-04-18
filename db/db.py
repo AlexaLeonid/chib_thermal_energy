@@ -38,10 +38,11 @@ def personal_ac_obj(personal_ac_id):
     accarc_columns, accarc_data = pa_accarc(data["ID"])
     communics_columns, communics_data = pa_communics(data["COMMUNICS"])
     pa_c_columns, pa_c_data = pa_counters(data["ID"])
-    f_с_columns, f_c_data = flat_counters(data["FLAT_ID"])
+    f_c_columns, f_c_data = flat_counters(data["FLAT_ID"])
+    h_c_columns, h_c_data = house_counters(data["ID"])
     return (data, lodger_columns, lodger_data, fl_srvs_columns, fl_srvs_data,
             accarc_columns, accarc_data, communics_columns, communics_data,
-            pa_c_columns, pa_c_data, f_с_columns, f_c_data)
+            pa_c_columns, pa_c_data, f_c_columns, f_c_data, h_c_columns, h_c_data)
 
 def pa_class(data):
     with pool.acquire() as connection:
@@ -147,18 +148,21 @@ def flat_counters(flat_id):
 
     return columns, data
 
-# def house_counters(flat_id):
-#     with pool.acquire() as connection:
-#         with connection.cursor() as cursor:
-#             cursor.execute("select c.id as Код, c.service as Услуга, c.NUM as Номер, TO_CHAR(c.set_date, 'YYYY-MM-DD') as \"Начало учета\", c.readings as Показания "
-#                            "from r#flats f "
-#                            "join r#counter c on f.counters = c.collection_id "
-#                            "where f.id  = :flat_id ",
-#                            flat_id = flat_id)
-#             columns = [col[0] for col in cursor.description]
-#             data = cursor.fetchall()
-#
-#     return columns, data
+def house_counters(pa_id):
+    with pool.acquire() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute("select distinct hc.id as Код, hc.type_name as Тип, hc.num as Номер, "
+                           "hc.date_begin as \"Начало учета\" "
+                           "from r#hm_counter hc "
+                           "join r#hm_charge hch on hc.id = hch.house_meter "
+                           "join r#hm_charge_docs hd on hch.charge_docs = hd.collection_id "
+                           "join r#document d on d.id = hd.document "
+                           "where d.personal_ac = :pa_id ",
+                           pa_id = pa_id)
+            columns = [col[0] for col in cursor.description]
+            data = cursor.fetchall()
+
+    return columns, data
 
 def сounter_readings(c_reading_id):
     with pool.acquire() as connection:

@@ -3,17 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лицевой счет {{ pa_data["id"] }}</title>
+    <title>Лицевой счет {{ pa_data["ID"] }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/table.css" rel="stylesheet">
 
 </head>
 <body>
     <img class="logo_ues" src="static/img/logo-ues.svg">
+    <div class="pa_search">
+        <label class="form-label">Номер лицевого счета</label>
+        <form class="pa_search_form" action="/personal_ac">
+            <input class="search_input" name="id" type="text" placeholder="Введите номер лицевого счета">
+            <button type="submit" class="btn btn-primary ">Найти</button>
+        </form>
+    </div>
+
+    <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
     <div class="container py-4">
         <!-- Карточка лицевого счета -->
         <div class="account-card">
-            <h2 class="mb-4">Лицевой счет {{ pa_data["id"] }}</h2>
+            <h4 class="mb-4">Лицевой счет {{ pa_data["ID"] }}</h4>
                 <div class="card-sector">
                     <div class="mb-3 card-sector-filed">
                         <strong>Дата открытия:</strong>
@@ -113,7 +122,7 @@
                     <div class = "section_info">
                         <div class = "details_1">
                             <div class="card-sector">
-                                <h4> Реквизиты ЛС</h4>
+                                <h6> Реквизиты ЛС</h6>
                                 <div class="mb-3">
                                     <strong>Собственность:</strong> <span id="own-type">{{pa_data["OWN_TYPE"]}}</span>
                                 </div>
@@ -160,7 +169,7 @@
                         </div>
                         <div class = "details_2">
                             <div class="card-sector">
-                                <h4> Реквизиты квартиры</h4>
+                                <h6> Реквизиты квартиры</h6>
                                 <div class="mb-3">
                                     <strong>Материал стен:</strong> <span id="wall">{{pa_data["WALL"]}}</span>
                                 </div>
@@ -181,7 +190,7 @@
                                 </div>
                             </div>
                             <div class="card-sector">
-                                <h4> Реквизиты дома</h4>
+                                <h6> Реквизиты дома</h6>
                                 <div class="mb-3">
                                     <strong>Почтовое отделение:</strong> <span id="post_idx">{{pa_data["POST_IDX"]}}</span>
                                 </div>
@@ -194,7 +203,7 @@
                 <!-- Вкладка "Услуги" -->
                 <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
                     <div class="alert alert-info mt-3">
-                        <h4 class="section-title">Услуги квартиры</h4>
+                        <h6 class="section-title">Услуги квартиры</h6>
                         <div class="data-table">
                             <table class="table table-striped">
                                 <thead>
@@ -227,7 +236,7 @@
                 <!-- Вкладка "Расчет" -->
                 <div class="tab-pane fade" id="calculation" role="tabpanel" aria-labelledby="calculation-tab">
                     <div class="alert alert-info mt-3">
-                        <h4 class="section-title">Расчет</h4>
+                        <h6 class="section-title">Расчет</h6>
                         <div class="data-table">
                             <table class="table table-striped">
                                 <thead>
@@ -269,7 +278,7 @@
                     <div class="alert alert-info mt-3">
                         <div class = "section_info">
                             <div class = "details_1">
-                                <h4 class="section-title">ИПУ:</h4>
+                                <h6 class="section-title">ИПУ:</h6>
                                 <div class="data-table">
                                     <table id="individualMeters" class="table table-striped meter-table">
                                         <thead>
@@ -297,7 +306,7 @@
                                     </table>
                                 </div>
 
-                                <h4 class="section-title">КПУ:</h4>
+                                <h6 class="section-title">КПУ:</h6>
                                 <div class="data-table">
                                     <table id="collectiveMeters" class="table table-striped meter-table">
                                         <thead>
@@ -309,6 +318,34 @@
                                         </thead>
                                         <tbody>
                                             {% for row in f_c_data %}
+                                                <tr data-meter-id="{{ row[0] }}">
+                                                    {% for value in row %}
+                                                        <td>
+                                                            {% if value is none %}
+                                                                NULL
+                                                            {% else %}
+                                                                {{ value }}
+                                                            {% endif %}
+                                                        </td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h6 class="section-title">ОПУ:</h6>
+                                <div class="data-table">
+                                    <table id="houseMeters" class="table table-striped meter-table">
+                                        <thead>
+                                            <tr>
+                                                {% for column in h_c_columns %}
+                                                    <th>{{ column }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in h_c_data %}
                                                 <tr data-meter-id="{{ row[0] }}">
                                                     {% for value in row %}
                                                         <td>
@@ -439,12 +476,10 @@
                     });
                     $tbody.append($row);
                 });
-
-
-
             }
         });
 
     </script>
+
 </body>
 </html>
